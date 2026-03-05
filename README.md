@@ -5,21 +5,15 @@
     <a href="https://scholar.google.com/citations?user=lvzvu-cAAAAJ&hl=zh-CN"> <b>Chengqi Li</b> </a> ·
     <a href="https://www.cas.mcmaster.ca/~hew11/"> <b> Wenbo He </b> </a>
 </p>
-<p align="center">
+<div align="center">
   <b>CVPR 2026</b>
-</p>
+</div>
 
-<p align="center">
-  <a href="https://arxiv.org/abs/2603.03711">
-    <img src="https://img.shields.io/badge/paper-arxiv-red.svg" height="22px" />
-  </a>
-  <a href="https://github.com/HideTheDandi/LDP-Slicing">
-    <img src="https://img.shields.io/badge/GitHub-Repository-181717.svg?logo=github" height="22px" />
-  </a>
-  <a href="https://hidethedandi.github.io/coda_webpage/LDP-Slicing/index.html">
-    <img src="https://img.shields.io/badge/Project-Page-bb8a2e.svg?logo=github" height="22px" />
-  </a>
-</p>
+<div align="center">
+  <a href="https://arxiv.org/abs/2603.03711" target="_blank"><img src=https://img.shields.io/badge/paper-arxiv-red.svg height=22px></a>
+  <a href=https://hidethedandi.github.io/coda_webpage/LDP-Slicing/index.html target="_blank"><img src=https://img.shields.io/badge/Project-Page-bb8a2e.svg?logo=github height=22px></a>
+  <a href=https://github.com/HideTheDandi/LDP-Slicing target="_blank"><img src=https://img.shields.io/badge/GitHub-Repository-181717.svg?logo=github height=22px></a>
+</div>
 
 ## TL;DR
 - We propose **LDP-Slicing**, a training-free image privatization pipeline with pixel-level local differential privacy.
