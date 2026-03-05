@@ -93,5 +93,4 @@ If you find this project useful, please cite:
 
 ## License
 **Apache License 2.0**.
-`Apache-2.0`
 - Full details: [`LICENSE.txt`](LICENSE.txt)
