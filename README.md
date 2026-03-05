@@ -8,13 +8,10 @@
 <p align="center">
     <b>CVPR 2026</b><br/>
     <a href="https://arxiv.org/abs/2603.03711"> <img src=https://img.shields.io/badge/paper-arxiv-red.svg height=22px> </a> 
-    · <a href="https://github.com/HideTheDandi/LDP-Slicing"> <img src=https://img.shields.io/badge/GitHub-Repository-181717.svg?logo=github height=22px></a> 
-    · <a href="https://hidethedandi.github.io/coda_webpage/LDP-Slicing/index.html"> <img src= https://img.shields.io/badge/Project-Page-bb8a2e.svg?logo=github height=22px></a> 
+    <a href="https://github.com/HideTheDandi/LDP-Slicing"> <img src=https://img.shields.io/badge/GitHub-Repository-181717.svg?logo=github height=22px></a> 
+    <a href="https://hidethedandi.github.io/coda_webpage/LDP-Slicing/index.html"> <img src= https://img.shields.io/badge/Project-Page-bb8a2e.svg?logo=github height=22px></a> 
 
 </p>
-
-
----
 
 ## TL;DR
 - We propose **LDP-Slicing**, a training-free image privatization pipeline with pixel-level local differential privacy.
