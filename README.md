@@ -7,7 +7,7 @@
 </p>
 <p align="center">
     <b>CVPR 2026</b><br/>
-    <a href="xxx">Paper</a> · <a href="https://github.com/HideTheDandi/LDP-Slicing">Code</a>
+    <a href="https://arxiv.org/abs/2603.03711">Paper</a> · <a href="https://github.com/HideTheDandi/LDP-Slicing">Code</a>
 </p>
 
 
