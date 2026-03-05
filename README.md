@@ -1,10 +1,10 @@
 # LDP-Slicing: Local Differential Privacy for Images via Randomized Bit-Plane Slicing
 
-<p align="center">
+<div align="center">
     <a href="https://scholar.google.com/citations?user=oMFszPAAAAAJ&hl=en"> <b>Yuanming Cao</b> </a> ·
     <a href="https://scholar.google.com/citations?user=lvzvu-cAAAAJ&hl=zh-CN"> <b>Chengqi Li</b> </a> ·
     <a href="https://www.cas.mcmaster.ca/~hew11/"> <b> Wenbo He </b> </a>
-</p>
+</div>
 <div align="center">
   <b>CVPR 2026</b>
 </div>
