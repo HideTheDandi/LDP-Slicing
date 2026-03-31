@@ -33,10 +33,11 @@ pip install -r requirements.txt
 
 ## Quick Start 
 
-### 1) Load epsilon allocation from the budget table: 
-`privacy_budgets.json` (repo root by default, full derivations in supp of the main paper.  
-Use **`get_privacy_budget`** to pick a **color weights** (`411` / `211` / `111`) and a **total budget** \(\varepsilon_{\mathrm{tot}}\). It returns per–bit-plane tuples for Y and chroma channels. 
+### 1) Load epsilon allocation from the budget table (Utility-awared budget allocation): 
+Located at `privacy_budgets.json`, it returns per–bit-plane tuples for Y and chroma channels. (Repo root by default, full derivations in supp of the main paper.)
 
+Use **`get_privacy_budget`** to pick a **color weights** (`411` / `211` / `111`) and a **total budget** $\(\varepsilon_{\mathrm{tot}}\)$.
+Example usage: 
 ```python
 from ldp_slicing import get_privacy_budget
 
