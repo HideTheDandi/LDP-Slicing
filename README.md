@@ -29,14 +29,21 @@
 pip install -r requirements.txt
 ```
 
+`requirements.txt` lists **core** libs for `ldp_slicing.py` (PyTorch + `pytorch-wavelets`) plus **common** libs for training PPFR/PPIC.
+
 ## Quick Start 
 
-### 1) Load epsilon allocation from table (Optional)
-```python
-from ldp_slicing import get_epsilon_value
+### 1) Load epsilon allocation from the budget table: 
+`privacy_budgets.json` (repo root by default, full derivations in supp of the main paper.  
+Use **`get_privacy_budget`** to pick a **color weights** (`411` / `211` / `111`) and a **total budget** \(\varepsilon_{\mathrm{tot}}\). It returns per–bit-plane tuples for Y and chroma channels. 
 
-epsilon_y, epsilon_c = get_epsilon_value(20.0) #Load eps value at startup to avoid bottleneck
+```python
+from ldp_slicing import get_privacy_budget
+
+# color_weight: "411" -> 4:1:1 (default), "211" -> 2:1:1, "111" -> 1:1:1
+epsilon_y, epsilon_c, total_eps, budget_key = get_privacy_budget("411", 20.0)
 ```
+
 
 ### 2) Apply privatization algorithm
 ```python
@@ -65,12 +72,11 @@ Apply LDP-Slicing with a torch dataloader:
 import torch
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from ldp_slicing import dp_slicing_dwt, get_epsilon_value
+from ldp_slicing import dp_slicing_dwt, get_privacy_budget
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Load once, avoid bottleneck
-epsilon_y, epsilon_c = get_epsilon_value(20.0)
+epsilon_y, epsilon_c, _, _ = get_privacy_budget("411", 20.0)
 train_set = datasets.CIFAR10( # use cifar10 for example
     root="./data",
     train=True,
@@ -111,18 +117,34 @@ for images, labels in loader:
     optimizer.step()
 ```
 
+## Training Privacy-Preserving Image Classification/Face Recognition 
 
-## Privacy Budget Table
+For Image Classification: `experiment/train_resnet56_ppic.py`.
+For Face Recognition: `experiment/train_arcface_ppfr.py`. 
 
-The precomputed budget schedules are provided in `privacy_budgets.json` for total budgets (Full derivation is in Appendix of the main paper): 
+### Run the training scripts
 
+**Image classification (CIFAR / ResNet-56):**
+
+```bash
+bash ./script/train_ppic.sh
 ```
-1.0, 2.4, 5.2, 12.0, 20.0, 32.0, 58.0
+
+**Face recognition (ArcFace / IR-50):** set `DATA_ROOT`, `FILE_LIST`, and optionally `PRETRAINED_PATH`, `CUDA_VISIBLE_DEVICES`, `WORLD_SIZE`, then:
+
+```bash
+bash ./script/train_ppfr.sh
 ```
 
-Each entry contains:
-- `epsilon_y`: 8-value tuple for Y channel bit-planes
-- `epsilon_c`: 8-value tuple for Cb/Cr channel bit-planes
+You can override paths without editing the file, e.g.  
+`DATA_ROOT=/your/ms1m FILE_LIST=/your/list.txt PRETRAINED_PATH=/your/IR50.pth bash ./script/train_ppfr.sh`
+
+Notes:
+- **PPIC:** checkpoints and logs under `./checkpoint/`; CIFAR data under `./data/`.
+- **PPFR:** checkpoints under `./checkpoint/arcface_*`; see `experiment/train_arcface_ppfr.py` for arguments (`--file_list` is required: lines of `relative_path label`).
+- For PPFR data prep, see: https://github.com/yakhyo/face-recognition  
+- IR-50 pretrained backbone (optional): https://drive.google.com/file/d/1ik8tzE9Scxhs4RJMZ6m0WW938BWX305k/view?usp=share_link
+
 
 ## Main Results
 

@@ -10,11 +10,10 @@ from pytorch_wavelets import DWTForward, DWTInverse
 
 
 def to_ycbcr(x: torch.Tensor, max_value: float = 255.0) -> torch.Tensor:
-   
     # x: Input tensor with shape [N, 3, H, W]. Values are typically in [0, max_value].
     # max_value: Dynamic range maximum (255 for 8-bit full range).
+    # reuturs YCbCr tensor [N, 3, H, W]
 
-    # reuturs YCbCr tensor with shape [N, 3, H, W].
     if x.ndim != 4 or x.size(1) != 3:
         raise ValueError(f"x must have shape [N, 3, H, W], got {tuple(x.shape)}")
 
@@ -31,10 +30,10 @@ def to_ycbcr(x: torch.Tensor, max_value: float = 255.0) -> torch.Tensor:
 
 def to_rgb(ycbcr: torch.Tensor, max_value: float = 255.0) -> torch.Tensor:
 
-    # ycbcr: Input tensor with shape [N, 3, H, W].
+    # ycbcr: Input tensor [N, 3, H, W].
     # max_value: Dynamic range maximum (255 for 8-bit full range).
+    # returns RGB tensor [N, 3, H, W].
 
-    # returns RGB tensor with shape [N, 3, H, W].
     if ycbcr.ndim != 4 or ycbcr.size(1) != 3:
         raise ValueError(f"ycbcr must have shape [N, 3, H, W], got {tuple(ycbcr.shape)}")
 
@@ -66,8 +65,8 @@ def _epsilon_to_per_bit(epsilon, device) -> torch.Tensor:
 
 
 def load_budgets_table(json_path=None):
-    
     #load epsilon allocation table from JSON (solved by lagrangian, default is None).
+
     if json_path is None:
         json_path = Path(__file__).with_name("privacy_budgets.json")
     else:
@@ -77,9 +76,69 @@ def load_budgets_table(json_path=None):
         return json.load(f)
 
 
-def get_epsilon_value(total_epsilon, budgets=None):
+# Color-weight aliases for WC-aware schedules in privacy_budgets.json (411 / 211 / 111).
+WC_ALIASES = {
+    "411": "4:1:1",
+    "211": "2:1:1",
+    "111": "1:1:1",
+}
 
+
+def get_privacy_budget(color_weight, total_epsilon, json_path=None):
+    # Load WC-aware schedule and return (epsilon_y, epsilon_c, total_eps, budget_key).
+    # json_path: optional explicit path; otherwise tries repo root then experiment/.
+    if json_path is not None:
+        budget_path = Path(json_path)
+    else:
+        repo_root = Path(__file__).resolve().parent
+        candidates = [
+            repo_root / "privacy_budgets.json",
+            repo_root / "experiment" / "privacy_budgets.json",
+        ]
+        budget_path = next((p for p in candidates if p.exists()), candidates[0])
+
+    raw = load_budgets_table(json_path=budget_path)
+    name = (color_weight or "411").strip().lower()
+    budget_key = WC_ALIASES.get(name, name)
+    if budget_key not in raw:
+        raise ValueError(f"Unknown color_weight: {name} (use 411 / 211 / 111)")
+
+    schedule_map = raw[budget_key]
+    total_key = f"{float(total_epsilon):.1f}"
+    if total_key not in schedule_map:
+        available = ", ".join(
+            str(k) for k in sorted(schedule_map.keys(), key=lambda x: float(x))
+        )
+        raise ValueError(
+            f"epsilon={total_epsilon} not found in budget table {budget_key}. "
+            f"Available values: {available}"
+        )
+
+    schedule = schedule_map[total_key]
+    epsilon_y = tuple(float(v) for v in schedule["epsilon_y"])
+    epsilon_cb = tuple(float(v) for v in schedule.get("epsilon_cb", schedule.get("epsilon_c", ())))
+    epsilon_cr = tuple(float(v) for v in schedule.get("epsilon_cr", schedule.get("epsilon_c", ())))
+
+    if len(epsilon_y) != 8 or len(epsilon_cb) != 8 or len(epsilon_cr) != 8:
+        raise ValueError(
+            "Expected 8-bit schedules "
+            f"(got len(epsilon_y)={len(epsilon_y)}, len(epsilon_cb)={len(epsilon_cb)}, len(epsilon_cr)={len(epsilon_cr)})."
+        )
+
+    if epsilon_cb != epsilon_cr:
+        raise ValueError(
+            "epsilon_cb must equal epsilon_cr "
+            "(dp_slicing_* uses a single epsilon_c for both chroma channels)."
+        )
+
+    epsilon_c = epsilon_cb
+    total_eps = sum(epsilon_y) + 2 * sum(epsilon_c)
+    return epsilon_y, epsilon_c, total_eps, budget_key
+
+
+def get_epsilon_value(total_epsilon, budgets=None):
     # read table and return (epsilon_y, epsilon_c) 
+
     if budgets is None:
         budgets = load_budgets_table()
 
@@ -159,8 +218,8 @@ def dp_slicing_dwt(
     # epsilon_c: DP epsilon specification for Cb/Cr channels.
     # device: device. 
     # mode: DWT boundary mode (default: "periodization").
+    # returns obfuscated RGB tensor [N, 3, H, W] in [0, 1]. 
 
-    # returns obfuscated RGB tensor [N, 3, H, W] in [0, 1] with ldp guarantee.
     if x.ndim != 4 or x.size(1) != 3:
         raise ValueError(f"x must have shape [N, 3, H, W], got {tuple(x.shape)}")
 
@@ -196,7 +255,6 @@ def dp_slicing_dwt(
     return rgb_priv_255.clamp(0.0, 255.0) / 255.0
 
 if __name__ == "__main__":
-    # Example usage
     device = "cuda" if torch.cuda.is_available() else "cpu"
     epsilon_y, epsilon_c = get_epsilon_value(20.0)
     dummy_input = torch.rand(1, 3, 225, 225).to(device)  # [0, 1] range
