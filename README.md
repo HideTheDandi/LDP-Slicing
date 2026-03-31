@@ -143,7 +143,7 @@ Notes:
 - **PPIC:** checkpoints and logs under `./checkpoint/`; CIFAR data under `./data/`.
 - **PPFR:** checkpoints under `./checkpoint/arcface_*`; see `experiment/train_arcface_ppfr.py` for arguments (`--file_list` is required: lines of `relative_path label`).
 - For PPFR data prep, see: https://github.com/yakhyo/face-recognition  
-- IR-50 pretrained backbone (optional): https://drive.google.com/file/d/1ik8tzE9Scxhs4RJMZ6m0WW938BWX305k/view?usp=share_link
+- IR-50 pretrained backbone: https://drive.google.com/file/d/1ik8tzE9Scxhs4RJMZ6m0WW938BWX305k/view?usp=share_link
 
 
 ## Main Results
