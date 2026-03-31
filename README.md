@@ -135,8 +135,7 @@ bash ./script/train_ppic.sh
 ```bash
 bash ./script/train_ppfr.sh
 ```
-
-You can override paths without editing the file, e.g.  
+Change the path of pairlist and pretrain model:
 `DATA_ROOT=/your/ms1m FILE_LIST=/your/list.txt PRETRAINED_PATH=/your/IR50.pth bash ./script/train_ppfr.sh`
 
 Notes:
