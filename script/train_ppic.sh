@@ -15,7 +15,7 @@ EPOCHS=250
 LR=0.1
 COLOR_WEIGHT="411"
 
-# Privacy budgets to train
+# Privacy budgets 
 # EPSILONS=(1.0 2.4 5.2 12.0 20 32.0 58.0)
 EPSILONS=(20.0)
 echo "================================================"
@@ -36,8 +36,7 @@ for EPS in "${EPSILONS[@]}"; do
     echo "Started at: $(date)"
     echo "================================================"
 
-    # CUDA_VISIBLE_DEVICES="${GPU_ID}" python -m experiment.train_resnet56_ppic \
-    python -m experiment.train_resnet56_ppic \
+    CUDA_VISIBLE_DEVICES="${GPU_ID}" python -m experiment.train_resnet56_ppic \
         --dataset ${DATASET} \
         --epsilon ${EPS} \
         --batchsize ${BATCH_SIZE} \

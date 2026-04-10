@@ -1,4 +1,4 @@
-# LDP-Slicing: Local Differential Privacy for Images via Randomized Bit-Plane Slicing [CVPR'26]
+# LDP-Slicing: Local Differential Privacy for Images via Randomized Bit-Plane Slicing [CVPR'26 Oral]
 
 <p align="center">
     <a href="https://scholar.google.com/citations?user=oMFszPAAAAAJ&hl=en">  Yuanming Cao </a> ·
