@@ -20,7 +20,7 @@
 > Local Differential Privacy (LDP) is a strong trust model but is often considered impractical for images due to high-dimensional pixel space. LDP-Slicing addresses this mismatch by converting pixels to bit planes and applying LDP directly at bit level, with perceptual obfuscation (DWT-based) and optimized privacy budget allocation.
 
 <p align="center">
-    <img src="assets/pipline.jpg" alt="Pipeline" width="80%" />
+    <img src="assets/pipline.png" alt="Pipeline" width="80%" />
 </p>
 
 ## Environment
